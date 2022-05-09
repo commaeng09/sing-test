@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .check-group-wrap {
+      position: absolute;
+      top: 200px;
+      left: 10%;
+    }
+
+    .check-group {
+      position: relative;
+    }
+
+    .check-box {
+      position: absolute;
+      top: -9px;
+      left: -9px;
+      width: 200px;
+      height: 200px;
+      clear: both;
+      display: inline-block;
+      border: 5px dashed #000;
+      padding: 5px;
+    }
+
+    .check {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background: red;
+      border: 1px solid blue;
+
+    }
+
+    /* .check:nth-of-type(2){
+      transform: translateX(200px);
+    } */
+    /* .check:nth-child(3){
+      transform: translateX(400px);
+    }
+    .check:nth-child(4){
+      transform: translateX(600px);
+    } */
+  </style>
+</head>
+
+<body>
+
+
+  <div class="check-group-wrap">
+    <div class="check-group">
+      <div class="check-box"></div>
+      <div class="check draggable"></div>
+      <div class="check draggable"></div>
+    </div>
+  </div>
+
+  <script>
+
+
+
+  </script>
+  <script type="module">
+    // global
+    let maxWidth = 200;
+    let maxHeight = 200;
+    let minWidth = 200;
+    let minHeight = 200;
+
+    import interact from 'https://cdn.interactjs.io/v1.10.11/interactjs/index.js'
+
+
+    // target elements with the "draggable" class
+    interact('.draggable')
+      .draggable({
+        // enable inertial throwing
+        inertia: false,
+        // keep the element within the area of it's parent
+        modifiers: [
+          interact.modifiers.restrictRect({
+            // restriction: '.check-group-wrap',
+            // endOnly: true
+          })
+        ],
+        // enable autoScroll
+        autoScroll: true,
+
+        listeners: {
+          // call this function on every dragmove event
+          move: dragMoveListener,
+
+          // call this function on every dragend event
+          end(event) {
+          }
+        }
+      })
+
+    function dragMoveListener(event) {
+
+      var target = event.target;
+
+      // keep the dragged position in the data-x/data-y attributes
+      var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
+      var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
+
+      // translate the element
+      target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+
+      // update the posiion attributes
+      target.setAttribute('data-x', x)
+      target.setAttribute('data-y', y)
+
+      // update the width, height wrapper
+      resetPos(x, y);
+
+    }
+
+    function resetPos(x, y) {
+
+
+      var targetWrapper = document.querySelector(".check-box");
+
+      if ((x + 200) > maxWidth) {
+        maxWidth = x + 200;
+        minWidth = x;
+        targetWrapper.style.width = (x + 200) + 'px';
+      }
+      else if ((x + 200) < maxWidth) {
+        // maxWidth = x + 200;
+        // minWidth = x;
+      }
+      if ((y + 200) > maxHeight) {
+        maxHeight = y + 200;
+        targetWrapper.style.height = (y + 200) + 'px';
+      }
+
+      console.log('Max : ' + maxWidth + ',' + maxHeight);
+      console.log('Min : ' + minWidth + ',' + minHeight);
+      console.log(x + 200);
+    }
+
+  </script>
+</body>
+
+</html>
